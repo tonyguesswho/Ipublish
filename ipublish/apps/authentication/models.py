@@ -8,6 +8,8 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 
+from ipublish.apps.core.models import AbstractTimeStampedModel
+
 class UserManager(BaseUserManager):
 
     def create_user(self, username, email, password=None):
@@ -34,7 +36,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, AbstractTimeStampedModel):
     username = models.CharField(db_index = True, unique = True, max_length = 255)
 
     email = models.EmailField(db_index = True, unique = True)
@@ -42,11 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
 
     is_staff = models.BooleanField(default=False)
-
-    created_at = models.DateTimeField(auto_now_add = True)
-
-    updated_at = models.DateTimeField(auto_now = True)
-
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

@@ -18,5 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('ipublish.apps.authentication.urls', namespace='authentication'))
+    path('api/', include('ipublish.apps.authentication.urls', namespace='authentication')),
+    path('api/', include('ipublish.apps.profiles.urls', namespace='profiles')),
 ]
