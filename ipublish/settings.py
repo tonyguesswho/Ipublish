@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ipublish.apps.authentication',
     'ipublish.apps.profiles',
+    'ipublish.apps.articles',
     'django_extensions',
 ]
 
