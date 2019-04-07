@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'ipublish.apps.authentication',
     'ipublish.apps.profiles',
     'ipublish.apps.articles',
+    'ipublish.apps.comments',
     'django_extensions',
 ]
 
