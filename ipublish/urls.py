@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_swagger.views import get_swagger_view
+schema_view = get_swagger_view(title='Ipublish API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('ipublish.apps.articles.urls', namespace='articles')),
     path('api/', include('ipublish.apps.authentication.urls', namespace='authentication')),
     path('api/', include('ipublish.apps.profiles.urls', namespace='profiles')),
+    path(r'', schema_view),
 ]
