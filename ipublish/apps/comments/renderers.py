@@ -2,4 +2,5 @@ from ipublish.apps.core.renderers import IprofileJSONRenderer
 
 class CommentJsonRenderer(IprofileJSONRenderer):
     object_label='comment'
-    object_label_plural='comments'
+    pagination_object_label = 'comments'
+    pagination_count_label = 'commentsCount'

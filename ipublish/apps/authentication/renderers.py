@@ -3,6 +3,8 @@ from ipublish.apps.core.renderers import IprofileJSONRenderer
 class UserJSONRenderer(IprofileJSONRenderer):
     charset = 'utf-8'
     object_label='user'
+    pagination_object_label = 'users'
+    pagination_count_label = 'usersCount'
 
     def render(self, data, media_type=None, renderer_context=None):
         token = data.get('token', None)

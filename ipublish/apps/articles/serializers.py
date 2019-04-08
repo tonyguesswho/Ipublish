@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Article
+from .models import Article, Tag
 from ipublish.apps.profiles.serializers import ProfileSerializer
+from .relations import TagRelatedField
 
 class ArticleSerializer(serializers.ModelSerializer):
     author= ProfileSerializer(read_only=True)
@@ -12,6 +13,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     favoritesCount = serializers.SerializerMethodField(
         method_name='get_favorites_count'
     )
+
+    tagList = TagRelatedField(many=True, required=False, source='tags')
 
     createdAt = serializers.SerializerMethodField(method_name='get_created_at')
     updatedAt = serializers.SerializerMethodField(method_name='get_updated_at')
@@ -27,14 +30,19 @@ class ArticleSerializer(serializers.ModelSerializer):
             'description',
             'favorited',
             'favoritesCount',
+            'tagList',
             'slug',
             'title',
         )
 
     def create(self, validated_data):
         author = self.context.get('author', None)
+        tags = validated_data.pop('tags',[])
+        article = Article.objects.create(author=author, **validated_data)
+        for tag in tags:
+            article.tags.add(tag)
 
-        return Article.objects.create(author=author, **validated_data)
+        return article
 
     def get_created_at(self, instance):
         return instance.created_at.isoformat()
@@ -54,3 +62,12 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_favorites_count(self, instance):
         return instance.favorited_by.count()
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('tag',)
+
+    def to_representation(self, obj):
+        return obj.tag
