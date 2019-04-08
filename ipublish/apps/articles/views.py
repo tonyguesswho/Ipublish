@@ -22,7 +22,24 @@ class ArticleViewset(
     renderer_classes = (ArticleJsonRenderer,)
     serializer_class = ArticleSerializer
 
+    def get_queryset(self):
+        queryset = self.queryset
 
+        author = self.request.query_params.get('author', None)
+        if author is not None:
+            queryset = queryset.filter(author__user__username=author)
+
+        tag = self.request.query_params.get('tag', None)
+        if tag is not None:
+            queryset = queryset.filter(tags__tag=tag)
+
+        favorited_by = self.request.query_params.get('favorited', None)
+        if favorited_by is not None:
+            queryset = queryset.filter(
+                favorited_by__user__username=favorited_by
+            )
+
+        return queryset
 
     def create(self, request, *args, **kwargs):
         serializer_context = {
@@ -38,6 +55,19 @@ class ArticleViewset(
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request):
+        serializer_context = {'request': request}
+
+        page = self.paginate_queryset(self.get_queryset())
+
+        serializer = self.serializer_class(
+            page,
+            context=serializer_context,
+            many=True
+        )
+
+        return self.get_paginated_response(serializer.data)
 
     def update(self, request, slug):
         serializer_context = {'request': request}
